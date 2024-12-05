@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:15:44 by aatieh            #+#    #+#             */
-/*   Updated: 2024/11/12 16:53:34 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/05 00:25:58 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,20 +55,33 @@ void	free_split(char **string)
 		free(string[i]);
 		i++;
 	}
-	perror("execve failed\n");
+	// perror("execve failed\n");
 	free(string);
 }
 
-char	**get_cmd(char *arg)
+char	*get_path(char *arg, char **envp)
 {
-	char	**cmd;
+	char	**paths;
+	char	*path;
+	char	*tmp;
+	int		i;
 
-	cmd = malloc(sizeof(char *) * 4);
-	if (!cmd)
-		return (ft_putstr_fd("malloc failed\n", 2), NULL);
-	cmd[0] = ft_strdup("/bin/sh");
-	cmd[1] = ft_strdup("-c");
-	cmd[2] = ft_strdup(arg);
-	cmd[3] = NULL;
-	return (cmd);
+	tmp = ft_strjoin("/", arg);
+	paths = get_all_paths(envp);
+	i = 0;
+	while (paths[i])
+	{
+		path = ft_strjoin(paths[i], tmp);
+		if (access(path, X_OK) == 0)
+			break ;
+		free(path);
+		if (!paths[i + 1])
+			path = ft_strjoin(".", tmp);
+		i++;
+	}
+	free_split(paths);
+	free(tmp);
+	if (access(path, X_OK) == -1)
+		free(path);
+	return (path);
 }

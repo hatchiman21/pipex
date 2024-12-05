@@ -6,32 +6,61 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:45:11 by aatieh            #+#    #+#             */
-/*   Updated: 2024/11/12 16:50:04 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/05 08:51:07 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
+char	**get_all_paths(char **envp)
+{
+	int		i;
+	char	**path;
+
+	i = 0;
+	while (ft_strncmp(envp[i], "PATH=", 5))
+		i++;
+	path = ft_split(envp[i] + 5, ':');
+	return (path);
+}
+
+void	print_path(char **path)
+{
+	int	i;
+
+	i = 0;
+	while (path[i])
+	{
+		ft_printf("path[%d] = %s\n", i, path[i]);
+		i++;
+	}
+}
+
 int	middle_process(int pipefd[2], char *argv[], int argc, char **envp)
 {
 	int	id;
 	int	arg;
-	int	tmp_fd;
+	int	tmp_pipefd[2];
 
 	arg = 3;
 	while (arg + 2 < argc)
 	{
-		tmp_fd = creat_tmp_fd(pipefd);
+		tmp_pipefd[1] = pipefd[1];
+		tmp_pipefd[0] = pipefd[0];
+		if (pipe(pipefd) == -1)
+			return (perror("Pipe failed"), -1);
 		id = fork();
 		if (!id)
-			return (middle_child(argv[arg], tmp_fd, pipefd, envp));
+			return (middle_child(argv[arg], tmp_pipefd, pipefd, envp));
 		else
 		{
+			// close(pipefd[0]);
+			close(tmp_pipefd[1]);
+			wait(0);
 			if (id == -1)
 				ft_putstr_fd("fork failed\n", 2);
 			waitpid(id, NULL, 0);
-			close(tmp_fd);
-			unlink("./src/tempfile");
+			close(tmp_pipefd[0]);
 		}
 		arg++;
 	}
@@ -49,11 +78,12 @@ void	last_process(char *argv[], int argc, int pipefd[2], char **envp)
 		last_child(pipefd, argv, argc, envp);
 	else
 	{
+		close(pipefd[1]);
 		if (id == -1)
 			ft_putstr_fd("fork failed\n", 2);
+	wait(0);
+	waitpid(id, NULL, 0);
 		close(pipefd[0]);
-		close(pipefd[1]);
-		wait(0);
 	}
 }
 
@@ -64,7 +94,7 @@ int	first_process(char *argv[], int argc, char **envp)
 
 	if (pipe(pipefd) == -1)
 		return (perror("Pipe failed"), 3);
-	if (access(argv[1], F_OK) == -1 || access(argv[1], R_OK) == -1)
+	if (access(argv[1], R_OK) == -1)
 	{
 		perror(argv[1]);
 		last_process(argv, argc, pipefd, envp);
@@ -76,8 +106,10 @@ int	first_process(char *argv[], int argc, char **envp)
 			first_child(pipefd, argv, envp);
 		else
 		{
+			close(pipefd[1]);
 			if (id == -1)
 				ft_putstr_fd("fork failed\n", 2);
+			wait(0);
 			waitpid(id, NULL, 0);
 			last_process(argv, argc, pipefd, envp);
 		}
