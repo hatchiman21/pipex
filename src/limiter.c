@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:10:05 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/05 08:41:35 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/05 20:20:31 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,32 +58,30 @@ static int	limiter_child(int pipefd[2], char *argv[], char **envp)
 	return (-1);
 }
 
-int	limiter_f(char *argv[], int argc, char **envp)
+int	limiter_f(char *argv[], int argc, t_pipex *vars, char **envp)
 {
-	int	id;
-	int	pipefd[2];
+	t_child	*child;
 
-	if (pipe(pipefd) == -1)
-		return (ft_putstr_fd("pipe failed\n", 2), -1);
-	id = fork();
-	if (!id)
-		return (limiter_child(pipefd, argv, envp));
+	child = vars->first_child;
+	while (child)
+		child = child->next;
+	child = malloc(sizeof(t_child));
+	child->next = NULL;
+	child->id = fork();
+	if (!child->id)
+		return (limiter_child(vars->pipefd, argv, envp));
+	else
+		close(vars->pipefd[1]);
+	child->id = fork();
+	if (!child->id)
+		return (last_child(vars->pipefd, argv, argc, envp));
 	else
 	{
-		close(pipefd[1]);
-		waitpid(id, NULL, 0);
-	}
-	id = fork();
-	if (!id)
-		return (last_child(pipefd, argv, argc, envp));
-	else
-	{
-		if (id == -1)
+		if (child->id == -1)
 			ft_putstr_fd("fork failed\n", 2);
 		unlink("./src/tempfile");
-		close(pipefd[1]);
-		wait(0);
-		close(pipefd[0]);
+		close(vars->pipefd[1]);
+		close(vars->pipefd[0]);
 	}
 	return (0);
 }

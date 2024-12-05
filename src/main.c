@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:45:11 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/05 08:51:07 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/05 20:22:21 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,42 +24,76 @@ char	**get_all_paths(char **envp)
 	return (path);
 }
 
-void	print_path(char **path)
-{
-	int	i;
+// void	print_path(char **path)
+// {
+// 	int	i;
 
-	i = 0;
-	while (path[i])
+// 	i = 0;
+// 	while (path[i])
+// 	{
+// 		ft_printf("path[%d] = %s\n", i, path[i]);
+// 		i++;
+// 	}
+// }
+
+void	ft_lstclear_ite(t_child **lst, int wait_val)
+{
+	t_child	*temp;
+	t_child	*step;
+
+	temp = *lst;
+	while (temp)
 	{
-		ft_printf("path[%d] = %s\n", i, path[i]);
-		i++;
+		if (temp->id == wait_val)
+			break ;
+		step = temp;
+		temp = temp->next;
+	}
+	if (!temp)
+		return ;
+	if (temp == *lst)
+		*lst = temp->next;
+	else
+		step->next = temp->next;
+	free(temp);
+	return ;
+}
+
+void	wait_for_all(t_pipex *vars)
+{
+	int		wait_val;
+
+	while (vars->first_child)
+	{
+		wait_val = waitpid(-1, NULL, 0);
+		ft_lstclear_ite(&(vars->first_child), wait_val);
 	}
 }
 
-int	middle_process(int pipefd[2], char *argv[], int argc, char **envp)
+int	middle_process(t_pipex *vars, char *argv[], int argc, char **envp)
 {
-	int	id;
+	t_child	*child;
 	int	arg;
 	int	tmp_pipefd[2];
 
 	arg = 3;
+	child = vars->first_child;
+	while (child)
+		child = child->next;
 	while (arg + 2 < argc)
 	{
-		tmp_pipefd[1] = pipefd[1];
-		tmp_pipefd[0] = pipefd[0];
-		if (pipe(pipefd) == -1)
+		tmp_pipefd[1] = vars->pipefd[1];
+		tmp_pipefd[0] = vars->pipefd[0];
+		if (pipe(vars->pipefd) == -1)
 			return (perror("Pipe failed"), -1);
-		id = fork();
-		if (!id)
-			return (middle_child(argv[arg], tmp_pipefd, pipefd, envp));
+		child = malloc(sizeof(t_child));
+		child->next = NULL;
+		child->id = fork();
+		if (!child->id)
+			return (middle_child(argv[arg], tmp_pipefd, vars->pipefd, envp));
 		else
 		{
-			// close(pipefd[0]);
 			close(tmp_pipefd[1]);
-			wait(0);
-			if (id == -1)
-				ft_putstr_fd("fork failed\n", 2);
-			waitpid(id, NULL, 0);
 			close(tmp_pipefd[0]);
 		}
 		arg++;
@@ -67,51 +101,54 @@ int	middle_process(int pipefd[2], char *argv[], int argc, char **envp)
 	return (1);
 }
 
-void	last_process(char *argv[], int argc, int pipefd[2], char **envp)
+void	last_process(char *argv[], int argc, t_pipex *vars, char **envp)
 {
-	int	id;
+	t_child	*child;
 
-	if (middle_process(pipefd, argv, argc, envp) == -1)
+	child = vars->first_child;
+	while (child)
+		child = child->next;
+	if (middle_process(vars, argv, argc, envp) == -1)
 		return ;
-	id = fork();
-	if (!id)
-		last_child(pipefd, argv, argc, envp);
+	child = malloc(sizeof(t_child));
+	child->next = NULL;
+	child->id = fork();
+	if (!child->id)
+		last_child(vars->pipefd, argv, argc, envp);
 	else
 	{
-		close(pipefd[1]);
-		if (id == -1)
+		close(vars->pipefd[1]);
+		if (child->id == -1)
 			ft_putstr_fd("fork failed\n", 2);
-	wait(0);
-	waitpid(id, NULL, 0);
-		close(pipefd[0]);
+		close(vars->pipefd[0]);
 	}
 }
 
-int	first_process(char *argv[], int argc, char **envp)
+int	first_process(char *argv[], int argc, t_pipex *vars, char **envp)
 {
-	int	id;
-	int	pipefd[2];
+	t_child	*child;
 
-	if (pipe(pipefd) == -1)
-		return (perror("Pipe failed"), 3);
+	child = vars->first_child;
+	while (child)
+		child = child->next;
 	if (access(argv[1], R_OK) == -1)
 	{
 		perror(argv[1]);
-		last_process(argv, argc, pipefd, envp);
+		last_process(argv, argc, vars, envp);
 	}
 	else
 	{
-		id = fork();
-		if (!id)
-			first_child(pipefd, argv, envp);
+		child = malloc(sizeof(t_child));
+		child->next = NULL;
+		child->id = fork();
+		if (!child->id)
+			first_child(vars->pipefd, argv, envp);
 		else
 		{
-			close(pipefd[1]);
-			if (id == -1)
+			close(vars->pipefd[1]);
+			if (child->id == -1)
 				ft_putstr_fd("fork failed\n", 2);
-			wait(0);
-			waitpid(id, NULL, 0);
-			last_process(argv, argc, pipefd, envp);
+			last_process(argv, argc, vars, envp);
 		}
 	}
 	return (0);
@@ -120,18 +157,23 @@ int	first_process(char *argv[], int argc, char **envp)
 int	main(int argc, char *argv[], char **envp)
 {
 	int	fd;
+	t_pipex	vars;
 
 	if (argc < 5)
 		return (write(2, "not enough inputs\n", 19), 1);
+	if (pipe(vars.pipefd) == -1)
+		return (perror("Pipe failed"), 3);
 	if (access(argv[argc - 1], F_OK) == -1)
 	{
 		fd = open(argv[argc - 1], O_CREAT | O_WRONLY, 0644);
 		if (fd != -1)
 			close (fd);
 	}
+	vars.first_child = NULL;
 	if (!ft_strncmp("here_doc", argv[1], 10))
-		limiter_f(argv, argc, envp);
+		limiter_f(argv, argc, &vars, envp);
 	else
-		return (first_process(argv, argc, envp));
+		first_process(argv, argc, &vars, envp);
+	wait_for_all(&vars);
 	return (0);
 }
