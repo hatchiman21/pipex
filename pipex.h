@@ -19,16 +19,10 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 
-typedef struct	s_child
-{
-	int				id;
-	struct s_child	*next;
-}				t_child;
-
 typedef struct	s_pipex
 {
 	int		pipefd[2];
-	t_child	*first_child;
+	int		children_num;
 }				t_pipex;
 
 
