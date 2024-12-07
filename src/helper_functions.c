@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:15:44 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/05 00:25:58 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/07 13:50:37 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ int	dub_failed(int fd1, int fd2)
 {
 	close(fd1);
 	close(fd2);
-	ft_putstr_fd("dub2 failed\n", 2);
 	return (-1);
 }
 
@@ -55,7 +54,6 @@ void	free_split(char **string)
 		free(string[i]);
 		i++;
 	}
-	// perror("execve failed\n");
 	free(string);
 }
 
@@ -66,6 +64,8 @@ char	*get_path(char *arg, char **envp)
 	char	*tmp;
 	int		i;
 
+	if (access(arg, X_OK) == 0)
+		return (ft_strdup(arg));
 	tmp = ft_strjoin("/", arg);
 	paths = get_all_paths(envp);
 	i = 0;

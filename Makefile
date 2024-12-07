@@ -22,6 +22,8 @@ $(NAME): $(OBJS)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+bonus: all
+
 clean:
 	$(MAKE) -C $(LIBFT_DIR) clean
 	$(RM) $(OBJS)
@@ -32,4 +34,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all bonus clean fclean re

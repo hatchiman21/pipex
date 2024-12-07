@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:43:21 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/05 20:21:06 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/07 13:42:47 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,10 @@ int		dub_failed(int fd1, int fd2);
 int		first_child(int pipefd[2], char *argv[], char **envp);
 int		middle_child(char *arg, int tmp_pipefd[2], int pipefd[2], char **envp);
 int		last_child(int pipefd[2], char *argv[], int argc, char **envp);
-int		limiter_f(char *argv[], int argc, t_pipex *vars, char **envp);
+
+void	first_process(char *argv[], int argc, t_pipex *vars, char **envp);
+void	middle_process(t_pipex *vars, char *argv[], int argc, char **envp);
+void	last_process(char *argv[], int argc, t_pipex *vars, char **envp);
+void	limiter_f(char *argv[], int argc, t_pipex *vars, char **envp);
 
 #endif
