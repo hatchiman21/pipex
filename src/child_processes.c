@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:20:35 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/07 23:05:03 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/07 23:30:57 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@ int	first_child(int pipefd[2], char *argv[], char **envp)
 	int		fd;
 
 	cmd = ft_split(argv[2], ' ');
-	if (!cmd)
-		cmd = NULL;
 	path = get_path(cmd[0], envp);
 	close(pipefd[0]);
 	fd = open(argv[1], O_RDONLY);
@@ -45,8 +43,6 @@ int	middle_child(char *arg, int tmp_pipefd[2], int pipefd[2], char **envp)
 	char	*path;
 
 	cmd = ft_split(arg, ' ');
-	if (!cmd)
-		cmd = NULL;
 	path = get_path(cmd[0], envp);
 	close(pipefd[0]);
 	if (!cmd || dup2(tmp_pipefd[0], STDIN_FILENO) == -1
@@ -71,8 +67,6 @@ int	last_child(int pipefd[2], char *argv[], int argc, char **envp)
 	int		fd;
 
 	cmd = ft_split(argv[argc - 2], ' ');
-	if (!cmd)
-		cmd = NULL;
 	path = get_path(cmd[0], envp);
 	if (ft_strncmp(argv[1], "here_doc", 10) != 0)
 		fd = open(argv[argc - 1], O_WRONLY | O_TRUNC);

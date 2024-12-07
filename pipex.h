@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:43:21 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/07 19:58:52 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/07 23:31:38 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 # include "./libft/libft.h"
 # include <stdio.h>
-# include <fcntl.h>
 # include <sys/wait.h>
+# include <fcntl.h>
 
 typedef struct s_pipex
 {

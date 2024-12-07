@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:10:05 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/07 23:05:22 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/07 23:31:02 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,6 @@ static void	limiter_child(char *argv[], int pipefd[2], int tmp_fd, char **envp)
 	char	*path;
 
 	cmd = ft_split(argv[3], ' ');
-	if (!cmd)
-		cmd = NULL;
 	path = get_path(cmd[0], envp);
 	close(pipefd[0]);
 	limiter_child_helper(&tmp_fd, argv);
