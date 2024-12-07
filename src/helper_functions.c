@@ -6,40 +6,49 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:15:44 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/07 13:50:37 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/07 21:31:40 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-int	dub_failed(int fd1, int fd2)
+void	free_all(char *str, char **split)
 {
-	close(fd1);
-	close(fd2);
-	return (-1);
+	if (str)
+		free(str);
+	free_split(split);
 }
 
-int	creat_tmp_fd(int pipefd[2])
+void	close_all(int fd1, int fd2)
 {
-	int		i;
-	int		tmp_fd;
-	char	buf[1024];
+	if (fd1 && fd1 != -1)
+		close(fd1);
+	if (fd2 && fd2 != -1)
+		close(fd2);
+}
 
-	tmp_fd = open("./src/tempfile",  O_WRONLY | O_CREAT | O_TRUNC, 0666);
-	ft_printf("inside pipefd[0] is %d and pipefd[1] is %d and tmp_fd is %d\n", pipefd[0], pipefd[1], tmp_fd);
-	if (tmp_fd == -1)
-		return (perror("unable to creat tmp file\n"), -1);
-	i = read(pipefd[0], buf, 1024);
-	while (i == 1024)
+int	wait_for_all(t_pipex *vars)
+{
+	int	last_status;
+	int	pid;
+	int	status;
+
+	last_status = 0;
+	while (vars->children_num > 0)
 	{
-		write(tmp_fd, buf, i);
-		i = read(pipefd[0], buf, 1024);
+		pid = waitpid(-1, &status, 0);
+		if (pid == -1)
+			break ;
+		if (pid == vars->last_id)
+		{
+			if (WIFEXITED(status))
+				last_status = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				last_status = 128 + WTERMSIG(status);
+		}
+		vars->children_num -= 1;
 	}
-	if (i > 0)
-		write(tmp_fd, buf, i);
-	close(tmp_fd);
-	tmp_fd = open("./src/tempfile", O_RDONLY);
-	return (tmp_fd);
+	return (last_status);
 }
 
 void	free_split(char **string)
@@ -81,7 +90,7 @@ char	*get_path(char *arg, char **envp)
 	}
 	free_split(paths);
 	free(tmp);
-	if (access(path, X_OK) == -1)
-		free(path);
+	if (!path)
+		path = NULL;
 	return (path);
 }

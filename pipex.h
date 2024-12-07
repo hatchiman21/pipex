@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:43:21 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/07 13:42:47 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/07 19:58:52 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,27 +19,27 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 
-typedef struct	s_pipex
+typedef struct s_pipex
 {
-	int		pipefd[2];
-	int		children_num;
+	int	pipefd[2];
+	int	children_num;
+	int	last_id;
 }				t_pipex;
 
-
 char	**get_all_paths(char **envp);
-int		creat_tmp_fd(int pipefd[2]);
 void	free_split(char **string);
 char	*get_path(char *arg, char **envp);
-void	print_path(char **path);
-int		dub_failed(int fd1, int fd2);
+int		wait_for_all(t_pipex *vars);
+void	close_all(int fd1, int fd2);
+void	free_all(char *str, char **split);
 
 int		first_child(int pipefd[2], char *argv[], char **envp);
 int		middle_child(char *arg, int tmp_pipefd[2], int pipefd[2], char **envp);
 int		last_child(int pipefd[2], char *argv[], int argc, char **envp);
 
 void	first_process(char *argv[], int argc, t_pipex *vars, char **envp);
-void	middle_process(t_pipex *vars, char *argv[], int argc, char **envp);
+void	middle_process(char *argv[], int argc, t_pipex *vars, char **envp);
 void	last_process(char *argv[], int argc, t_pipex *vars, char **envp);
-void	limiter_f(char *argv[], int argc, t_pipex *vars, char **envp);
+void	limiter_process(char *argv[], int argc, t_pipex *vars, char **envp);
 
 #endif
