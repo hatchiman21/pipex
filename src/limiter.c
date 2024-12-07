@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:10:05 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/07 23:31:02 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/08 00:14:35 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ static void	limiter_child_helper(int *tmp_fd, char *argv[])
 		free(line);
 	close(*tmp_fd);
 	*tmp_fd = open("./src/tempfile", O_RDWR);
+	if (*tmp_fd == -1)
+		ft_dprintf(2, "the tempfile for ");
 }
 
 static void	limiter_child(char *argv[], int pipefd[2], int tmp_fd, char **envp)
