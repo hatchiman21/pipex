@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:15:44 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/07 21:31:40 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/08 19:02:41 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,19 @@
 
 void	free_all(char *str, char **split)
 {
+	int	i;
+
 	if (str)
 		free(str);
-	free_split(split);
+	i = 0;
+	if (!split)
+		return ;
+	while (split[i])
+	{
+		free(split[i]);
+		i++;
+	}
+	free(split);
 }
 
 void	close_all(int fd1, int fd2)
@@ -51,36 +61,17 @@ int	wait_for_all(t_pipex *vars)
 	return (last_status);
 }
 
-void	free_split(char **string)
+char	*get_final_path(char **paths, char *tmp)
 {
-	int	i;
-
-	i = 0;
-	if (!string)
-		return ;
-	while (string[i])
-	{
-		free(string[i]);
-		i++;
-	}
-	free(string);
-}
-
-char	*get_path(char *arg, char **envp)
-{
-	char	**paths;
-	char	*path;
-	char	*tmp;
 	int		i;
+	char	*path;
 
-	if (access(arg, X_OK) == 0)
-		return (ft_strdup(arg));
-	tmp = ft_strjoin("/", arg);
-	paths = get_all_paths(envp);
 	i = 0;
 	while (paths[i])
 	{
 		path = ft_strjoin(paths[i], tmp);
+		if (!path)
+			break ;
 		if (access(path, X_OK) == 0)
 			break ;
 		free(path);
@@ -88,9 +79,27 @@ char	*get_path(char *arg, char **envp)
 			path = ft_strjoin(".", tmp);
 		i++;
 	}
-	free_split(paths);
-	free(tmp);
 	if (!path)
 		path = NULL;
+	return (path);
+}
+
+char	*get_path(char *arg, char **envp)
+{
+	char	**paths;
+	char	*path;
+	char	*tmp;
+
+	if (access(arg, X_OK) == 0)
+		return (ft_strdup(arg));
+	tmp = ft_strjoin("/", arg);
+	paths = get_all_paths(envp);
+	if (!paths || !tmp)
+	{
+		free_all(tmp, paths);
+		return (NULL);
+	}
+	path = get_final_path(paths, tmp);
+	free_all(tmp, paths);
 	return (path);
 }

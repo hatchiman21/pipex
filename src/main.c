@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:45:11 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/07 22:55:35 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/08 18:55:06 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,10 @@ char	**get_all_paths(char **envp)
 	char	**path;
 
 	i = 0;
-	while (ft_strncmp(envp[i], "PATH=", 5))
+	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5))
 		i++;
+	if (!envp[i])
+		return (NULL);
 	path = ft_split(envp[i] + 5, ':');
 	return (path);
 }
