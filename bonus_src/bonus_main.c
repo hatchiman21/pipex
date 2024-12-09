@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   bonus_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:45:11 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/09 19:47:09 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/09 19:47:06 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/pipex.h"
+#include "../inc/bonus_pipex.h"
 
 int	child_process(char *arg, int in_fd, int out_fd, char **envp)
 {
@@ -58,16 +58,47 @@ void	first_process(char *argv[], int argc, t_pipex *vars, char **envp)
 			ft_putstr_fd("fork failed\n", 2);
 		if (access(argv[1], R_OK) == -1)
 			waitpid(vars->last_id, NULL, 0);
+		middle_process(argv, argc, vars, envp);
 		last_process(argv, argc, vars, envp);
 	}
 }
 
+void	middle_process(char *argv[], int argc, t_pipex *vars, char **envp)
+{
+	int	arg_num;
+	int	tmp_pipefd;
+
+	if (ft_strncmp(argv[1], "here_doc", 10))
+		arg_num = 3;
+	else
+		arg_num = 4;
+	while (arg_num + 2 < argc)
+	{
+		close(vars->pipefd[1]);
+		tmp_pipefd = vars->pipefd[0];
+		if (pipe(vars->pipefd) == -1)
+		{
+			perror("middle Pipe failed");
+			return ;
+		}
+		vars->children_num += 1;
+		vars->last_id = fork();
+		if (!vars->last_id)
+			child_process(argv[arg_num], tmp_pipefd, vars->pipefd[1], envp);
+		else
+			close_all(tmp_pipefd, vars->pipefd[1]);
+		arg_num++;
+	}
+}
 
 void	last_process(char *argv[], int argc, t_pipex *vars, char **envp)
 {
 	int	fd;
 
-	fd = open(argv[argc - 1], O_CREAT | O_WRONLY | O_TRUNC);
+	if (ft_strncmp(argv[1], "here_doc", 10) != 0)
+		fd = open(argv[argc - 1], O_CREAT | O_WRONLY | O_TRUNC);
+	else
+		fd = open(argv[argc - 1], O_CREAT | O_WRONLY | O_APPEND);
 	vars->children_num += 1;
 	vars->last_id = fork();
 	if (!vars->last_id)
@@ -89,17 +120,17 @@ int	main(int argc, char *argv[], char **envp)
 {
 	t_pipex	vars;
 
-	if (argc != 5)
+	if (argc < 5)
 	{
-		if (argc < 5)
-			ft_dprintf(2, "Not enough input\n");
-		else if (argc > 5)
-			ft_dprintf(2, "Too many input\n");
+		ft_dprintf(2, "Not enough input\n");
 		return (1);
 	}
 	if (pipe(vars.pipefd) == -1)
 		return (perror("Pipe failed"), 3);
 	vars.children_num = 0;
-	first_process(argv, argc, &vars, envp);
+	if (ft_strncmp("here_doc", argv[1], 10) == 0)
+		limiter_process(argv, argc, &vars, envp);
+	else
+		first_process(argv, argc, &vars, envp);
 	return (wait_for_all(&vars));
 }
