@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:45:11 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/09 19:47:09 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/10 20:43:45 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,11 @@ void	first_process(char *argv[], int argc, t_pipex *vars, char **envp)
 	}
 }
 
-
 void	last_process(char *argv[], int argc, t_pipex *vars, char **envp)
 {
 	int	fd;
 
-	fd = open(argv[argc - 1], O_CREAT | O_WRONLY | O_TRUNC);
+	fd = open(argv[argc - 1], O_RDWR | O_TRUNC | O_CREAT, 0644);
 	vars->children_num += 1;
 	vars->last_id = fork();
 	if (!vars->last_id)

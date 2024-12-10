@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:45:11 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/09 19:47:06 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/10 20:56:19 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ void	middle_process(char *argv[], int argc, t_pipex *vars, char **envp)
 		arg_num = 4;
 	while (arg_num + 2 < argc)
 	{
-		close(vars->pipefd[1]);
 		tmp_pipefd = vars->pipefd[0];
 		if (pipe(vars->pipefd) == -1)
 		{
@@ -96,9 +95,9 @@ void	last_process(char *argv[], int argc, t_pipex *vars, char **envp)
 	int	fd;
 
 	if (ft_strncmp(argv[1], "here_doc", 10) != 0)
-		fd = open(argv[argc - 1], O_CREAT | O_WRONLY | O_TRUNC);
+		fd = open(argv[argc - 1], O_RDWR | O_TRUNC | O_CREAT, 0644);
 	else
-		fd = open(argv[argc - 1], O_CREAT | O_WRONLY | O_APPEND);
+		fd = open(argv[argc - 1], O_RDWR | O_APPEND | O_CREAT, 0644);
 	vars->children_num += 1;
 	vars->last_id = fork();
 	if (!vars->last_id)

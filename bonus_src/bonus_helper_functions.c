@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper_functions.c                                 :+:      :+:    :+:   */
+/*   bonus_helper_functions.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:15:44 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/09 18:15:30 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/10 21:06:40 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	wait_for_all(t_pipex *vars)
 	return (last_status);
 }
 
-void	check_access(char *arg, t_pipex *vars, int first)
+void	check_access(char *arg, t_pipex *vars, int is_first)
 {
 	if (access(arg, F_OK) == -1)
 	{
@@ -69,7 +69,7 @@ void	check_access(char *arg, t_pipex *vars, int first)
 		close_all(vars->pipefd[0], vars->pipefd[1]);
 		exit(2);
 	}
-	if (first)
+	if (is_first)
 	{
 		if (access(arg, R_OK) == -1)
 		{

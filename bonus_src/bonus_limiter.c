@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   limiter.c                                          :+:      :+:    :+:   */
+/*   bonus_limiter.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:10:05 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/09 18:15:33 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/10 20:56:59 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	limiter_process(char *argv[], int argc, t_pipex *vars, char **envp)
 		else
 		{
 			waitpid(vars->last_id, NULL, 0);
-			close(tmp_fd);
+			close_all(tmp_fd, vars->pipefd[1]);
 			unlink("./src/tempfile");
 		}
 	}

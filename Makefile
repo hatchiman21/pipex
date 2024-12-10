@@ -14,12 +14,9 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
 NAME = pipex
-B_NAME = pipex
+B_NAME = NAME
 
 all: $(LIBFT) $(NAME)
-
-bonus: $(LIBFT) $(B_NAME)
-
 
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR)
@@ -28,11 +25,12 @@ $(NAME): $(OBJS)
 	$(CC) $(OBJS) -o $(NAME) -L$(LIBFT_DIR) -lft
 
 $(B_NAME): $(B_OBJS)
-	$(CC) $(B_OBJS) -o $(B_NAME) -L$(LIBFT_DIR) -lft
+	$(CC) $(B_OBJS) -o $(NAME) -L$(LIBFT_DIR) -lft
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+bonus: $(LIBFT) $(B_NAME)
 
 clean:
 	$(MAKE) -C $(LIBFT_DIR) clean

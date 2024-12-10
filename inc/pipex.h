@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:43:21 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/09 18:16:46 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/10 21:07:26 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	*get_path(char *arg, char **envp);
 int		wait_for_all(t_pipex *vars);
 void	close_all(int fd1, int fd2);
 void	free_all(char *str, char **split);
-void	check_access(char *arg, t_pipex *vars, int first);
+void	check_access(char *arg, t_pipex *vars, int is_first);
 
 int		child_process(char *arg, int in_fd, int out_fd, char **envp);
 void	first_process(char *argv[], int argc, t_pipex *vars, char **envp);
