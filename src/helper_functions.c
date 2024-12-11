@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:15:44 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/10 21:06:32 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/11 18:45:09 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	check_access(char *arg, t_pipex *vars, int is_first)
 	{
 		ft_dprintf(2, "pipex: no such file or directory: %s\n", arg);
 		close_all(vars->pipefd[0], vars->pipefd[1]);
-		exit(2);
+		exit(EXIT_FAILURE);
 	}
 	if (is_first)
 	{
@@ -75,7 +75,7 @@ void	check_access(char *arg, t_pipex *vars, int is_first)
 		{
 			ft_dprintf(2, "pipex: permission denied: %s\n", arg);
 			close_all(vars->pipefd[0], vars->pipefd[1]);
-			exit(2);
+			exit(EXIT_FAILURE);
 		}
 	}
 	else
@@ -84,7 +84,7 @@ void	check_access(char *arg, t_pipex *vars, int is_first)
 		{
 			ft_dprintf(2, "pipex: permission denied: %s\n", arg);
 			close_all(vars->pipefd[0], vars->pipefd[1]);
-			exit(2);
+			exit(EXIT_FAILURE);
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:45:11 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/10 20:43:45 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/11 19:04:14 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	child_process(char *arg, int in_fd, int out_fd, char **envp)
 	{
 		free_all(path, cmd);
 		close_all(in_fd, out_fd);
-		perror(arg);
+		ft_dprintf(2, "pipex: dup2 failed\n");
 		exit(2);
 	}
 	close_all(in_fd, out_fd);
