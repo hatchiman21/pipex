@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 18:06:10 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/09 18:16:25 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/16 16:42:51 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,15 @@ char	*get_final_path(char **paths, char *tmp)
 	return (path);
 }
 
-char	*get_path(char *arg, char **envp)
+char	*get_path(char *cmd, char **envp)
 {
 	char	**paths;
 	char	*path;
 	char	*tmp;
 
-	if (access(arg, X_OK) == 0)
-		return (ft_strdup(arg));
-	tmp = ft_strjoin("/", arg);
+	if (access(cmd, X_OK) == 0)
+		return (ft_strdup(cmd));
+	tmp = ft_strjoin("/", cmd);
 	paths = get_all_paths(envp);
 	if (!paths || !tmp)
 	{

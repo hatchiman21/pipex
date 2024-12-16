@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:15:44 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/11 18:45:09 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/16 21:45:35 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,17 +63,14 @@ int	wait_for_all(t_pipex *vars)
 
 void	check_access(char *arg, t_pipex *vars, int is_first)
 {
-	if (access(arg, F_OK) == -1)
-	{
-		ft_dprintf(2, "pipex: no such file or directory: %s\n", arg);
-		close_all(vars->pipefd[0], vars->pipefd[1]);
-		exit(EXIT_FAILURE);
-	}
 	if (is_first)
 	{
 		if (access(arg, R_OK) == -1)
 		{
-			ft_dprintf(2, "pipex: permission denied: %s\n", arg);
+			if (access(arg, F_OK) == -1)
+				ft_dprintf(2, "pipex: no such file or directory: %s\n", arg);
+			else
+				ft_dprintf(2, "pipex: permission denied: %s\n", arg);
 			close_all(vars->pipefd[0], vars->pipefd[1]);
 			exit(EXIT_FAILURE);
 		}

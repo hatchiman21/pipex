@@ -1,5 +1,5 @@
-SRCS_DIR = ./src
-OBJS_DIR = ./objs
+SRCS_DIR = src
+OBJS_DIR = obj
 
 SRCS		=	ft_isalpha.c ft_isdigit.c ft_isalnum.c ft_isascii.c ft_isprint.c \
        			ft_strlen.c ft_memset.c ft_bzero.c ft_memcpy.c ft_memmove.c \
@@ -33,8 +33,7 @@ $(OBJS_DIR):
 			@mkdir -p $(OBJS_DIR)
 
 clean:
-			@$(RM) $(OBJS)
-			@rmdir $(OBJS_DIR) 2>/dev/null || true
+	@rm -rf $(OBJS_DIR)
 
 fclean:			clean
 			@$(RM) $(NAME)

@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:45:11 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/11 19:03:45 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/16 21:47:14 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	first_process(char *argv[], int argc, t_pipex *vars, char **envp)
 	vars->last_id = fork();
 	if (!vars->last_id)
 	{
-		if (access(argv[1], W_OK) == -1 && fd != -1)
+		if (access(argv[1], R_OK) == -1 && fd != -1)
 			close(fd);
 		check_access(argv[1], vars, 1);
 		close(vars->pipefd[0]);
@@ -95,9 +95,9 @@ void	last_process(char *argv[], int argc, t_pipex *vars, char **envp)
 	int	fd;
 
 	if (ft_strncmp(argv[1], "here_doc", 10) != 0)
-		fd = open(argv[argc - 1], O_RDWR | O_TRUNC | O_CREAT, 0644);
+		fd = open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	else
-		fd = open(argv[argc - 1], O_RDWR | O_APPEND | O_CREAT, 0644);
+		fd = open(argv[argc - 1], O_WRONLY | O_APPEND | O_CREAT, 0644);
 	vars->children_num += 1;
 	vars->last_id = fork();
 	if (!vars->last_id)

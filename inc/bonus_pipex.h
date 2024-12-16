@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:43:21 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/10 21:07:31 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/16 21:44:10 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,14 @@
 # include <stdio.h>
 # include <sys/wait.h>
 # include <fcntl.h>
-
+# include <string.h>
+# include <errno.h>
 typedef struct s_pipex
 {
 	int	pipefd[2];
 	int	children_num;
 	int	last_id;
-}				t_pipex;
+}		t_pipex;
 
 char	*get_path(char *arg, char **envp);
 int		wait_for_all(t_pipex *vars);

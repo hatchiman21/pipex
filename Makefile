@@ -1,6 +1,6 @@
-LIBFT_DIR = ./libft
-SRC_DR = ./src
-B_SRC_DR = ./bonus_src
+LIBFT_DIR = libft
+SRC_DR = src
+B_SRC_DR = bonus_src
 LIBFT = $(LIBFT_DIR)/libft.a
 
 SRCS =  main.c find_path.c helper_functions.c
@@ -14,18 +14,18 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
 NAME = pipex
-B_NAME = NAME
+B_NAME = bonus_pipex
 
 all: $(LIBFT) $(NAME)
 
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR)
 
-$(NAME): $(OBJS)
+$(NAME): $(OBJS) inc/pipex.h
 	$(CC) $(OBJS) -o $(NAME) -L$(LIBFT_DIR) -lft
 
-$(B_NAME): $(B_OBJS)
-	$(CC) $(B_OBJS) -o $(NAME) -L$(LIBFT_DIR) -lft
+$(B_NAME): $(B_OBJS) inc/bonus_pipex.h
+	$(CC) $(B_OBJS) -o $(B_NAME) -L$(LIBFT_DIR) -lft
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -41,6 +41,7 @@ fclean: clean
 	$(MAKE) -C $(LIBFT_DIR) fclean
 	$(RM) $(B_OBJS)
 	$(RM) $(NAME)
+	$(RM) $(B_NAME)
 
 re: fclean all
 

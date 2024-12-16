@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:45:11 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/11 19:04:14 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/16 21:48:29 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ int	child_process(char *arg, int in_fd, int out_fd, char **envp)
 	cmd = ft_split(arg, ' ');
 	if (cmd && cmd[0])
 		path = get_path(cmd[0], envp);
-	if (!cmd || in_fd == -1 || dup2(out_fd, STDOUT_FILENO) == -1
-		|| dup2(in_fd, STDIN_FILENO) == -1 || !path)
+	if (!path || in_fd == -1 || dup2(out_fd, STDOUT_FILENO) == -1
+		|| dup2(in_fd, STDIN_FILENO) == -1)
 	{
 		free_all(path, cmd);
 		close_all(in_fd, out_fd);
@@ -45,8 +45,6 @@ void	first_process(char *argv[], int argc, t_pipex *vars, char **envp)
 	vars->last_id = fork();
 	if (!vars->last_id)
 	{
-		if (access(argv[1], W_OK) == -1 && fd != -1)
-			close(fd);
 		check_access(argv[1], vars, 1);
 		close(vars->pipefd[0]);
 		child_process(argv[2], fd, vars->pipefd[1], envp);
@@ -66,13 +64,11 @@ void	last_process(char *argv[], int argc, t_pipex *vars, char **envp)
 {
 	int	fd;
 
-	fd = open(argv[argc - 1], O_RDWR | O_TRUNC | O_CREAT, 0644);
+	fd = open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	vars->children_num += 1;
 	vars->last_id = fork();
 	if (!vars->last_id)
 	{
-		if (access(argv[argc - 1], W_OK) == -1 && fd != -1)
-			close(fd);
 		check_access(argv[argc - 1], vars, 0);
 		child_process(argv[argc - 2], vars->pipefd[0], fd, envp);
 	}

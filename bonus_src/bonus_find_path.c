@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   find_path.c                                        :+:      :+:    :+:   */
+/*   bonus_find_path.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 18:06:10 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/09 18:15:24 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/16 20:33:59 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,6 @@ char	*get_final_path(char **paths, char *tmp)
 		if (access(path, X_OK) == 0)
 			break ;
 		free(path);
-		if (!paths[i + 1])
-			path = ft_strjoin(".", tmp);
 		i++;
 	}
 	if (!path)
