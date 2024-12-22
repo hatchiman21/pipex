@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:45:11 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/22 19:07:09 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/22 19:25:51 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	child_process(char *arg, int in_fd, int out_fd, char **envp)
 	}
 	close_all(in_fd, out_fd);
 	execve(path, cmd, envp);
-	ft_dprintf(2, "pipex : command not found : %s\n", cmd[0]);
+	ft_dprintf(2, "pipex : %s: Is a directory\n", cmd[0]);
 	free_all(path, cmd);
 	exit(127);
 }
