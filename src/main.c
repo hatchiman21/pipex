@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:45:11 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/16 21:48:29 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/22 18:37:29 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,20 @@ int	child_process(char *arg, int in_fd, int out_fd, char **envp)
 	path = NULL;
 	cmd = ft_split(arg, ' ');
 	if (cmd && cmd[0])
-		path = get_path(cmd[0], envp);
-	if (!path || in_fd == -1 || dup2(out_fd, STDOUT_FILENO) == -1
-		|| dup2(in_fd, STDIN_FILENO) == -1)
+		path = get_path(cmd, envp);
+	if (!cmd || in_fd == -1 || dup2(out_fd, STDOUT_FILENO) == -1
+		|| dup2(in_fd, STDIN_FILENO) == -1 || !path)
 	{
 		free_all(path, cmd);
 		close_all(in_fd, out_fd);
-		ft_dprintf(2, "pipex: dup2 failed\n");
+		perror("pipex: dup2 failed");
 		exit(2);
 	}
 	close_all(in_fd, out_fd);
 	execve(path, cmd, envp);
-	ft_dprintf(2, "pipex : command not found : %s\n", cmd[0]);
+	ft_dprintf(2, "pipex : execve failed\n");
 	free_all(path, cmd);
-	exit(127);
+	exit(126);
 }
 
 void	first_process(char *argv[], int argc, t_pipex *vars, char **envp)
@@ -53,7 +53,7 @@ void	first_process(char *argv[], int argc, t_pipex *vars, char **envp)
 	{
 		close_all(fd, vars->pipefd[1]);
 		if (vars->last_id == -1)
-			ft_putstr_fd("fork failed\n", 2);
+			ft_putstr_fd("first fork failed\n", 2);
 		if (access(argv[1], R_OK) == -1)
 			waitpid(vars->last_id, NULL, 0);
 		last_process(argv, argc, vars, envp);

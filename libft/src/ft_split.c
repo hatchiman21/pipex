@@ -6,11 +6,11 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 17:20:16 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/08 19:15:01 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/22 16:47:57 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../libft.h"
 
 static void	free_all(char **res, int size)
 {
@@ -103,10 +103,8 @@ char	**ft_split(char const *s, char c)
 	char	**res;
 	int		word_num;
 
-	if (!s)
-		return (NULL);
 	word_num = count_words (s, c);
-	if (word_num == 0)
+	if (!s)
 		return (NULL);
 	res = (char **)malloc (sizeof (char *) * (word_num + 1));
 	if (!res)

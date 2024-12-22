@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:45:11 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/16 21:47:14 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/22 19:07:09 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	child_process(char *arg, int in_fd, int out_fd, char **envp)
 	path = NULL;
 	cmd = ft_split(arg, ' ');
 	if (cmd && cmd[0])
-		path = get_path(cmd[0], envp);
+		path = get_path(cmd, envp);
 	if (!cmd || in_fd == -1 || dup2(out_fd, STDOUT_FILENO) == -1
 		|| dup2(in_fd, STDIN_FILENO) == -1 || !path)
 	{
@@ -55,7 +55,7 @@ void	first_process(char *argv[], int argc, t_pipex *vars, char **envp)
 	{
 		close_all(fd, vars->pipefd[1]);
 		if (vars->last_id == -1)
-			ft_putstr_fd("fork failed\n", 2);
+			ft_putstr_fd("first fork failed\n", 2);
 		if (access(argv[1], R_OK) == -1)
 			waitpid(vars->last_id, NULL, 0);
 		middle_process(argv, argc, vars, envp);
