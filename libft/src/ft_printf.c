@@ -6,11 +6,11 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:14:06 by aatieh            #+#    #+#             */
-/*   Updated: 2024/11/23 19:39:06 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/24 17:37:14 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../libft.h"
 
 int write_printf(char *src, char *dest, int char_num)
 {
@@ -40,11 +40,17 @@ static char	*empty_check(char *string)
 	return (string);
 }
 
-int	nbr_alloc(long n, t_printf *res, int base)
+int	nbr_alloc(long long n, t_printf *res, int j, int base)
 {
 	int	i;
 
 	i = 0;
+	if (j == 3)
+		i += 2;
+	if (j == 3 && n == 0)
+		i = 5;
+	else if (n == 0)
+		i++;
 	if (n < 0)
 	{
 		i++;
@@ -55,13 +61,13 @@ int	nbr_alloc(long n, t_printf *res, int base)
 		i++;
 		n /= base;
 	}
-	res->str = malloc(sizeof(char) * i + 1);
+	res->str = malloc(sizeof(char) * (i + 1));
 	return (i);
 }
 
 int	ft_putnbr_hex_print(unsigned long n, t_printf *res, int j, int *i)
 {
-	if (j == 3 && n != 0 && *i == 0)
+	if (j == 3 && n != 0)
 		*i += write_printf("0x", res->str, 2);
 	else if (j == 3 && n == 0)
 		return (write_printf("(nil)", res->str, 5));
@@ -103,7 +109,7 @@ static int	print_main(char *string, va_list args, int i, t_printf *res)
 {
 	int				count;
 	char			c;
-	unsigned int	nbr;
+	unsigned long	nbr;
 	int				n;
 	int 			m;
 
@@ -123,31 +129,32 @@ static int	print_main(char *string, va_list args, int i, t_printf *res)
 	else if (string[i] == 'p')
 	{
 		nbr = (size_t)va_arg(args, void *);
-		count = nbr_alloc(nbr, res, 16);
+		res->str = malloc(sizeof(char) * 19);
 		ft_putnbr_hex_print(nbr, res, 3, &m);
+		count = ft_strlen(res->str);
 	}
 	else if (string[i] == 'd' || string[i] == 'i')
 	{
 		n = va_arg(args, int);
-		count = nbr_alloc(n, res, 10);
+		count = nbr_alloc(n, res, 0, 10);
 		ft_putnbr_print(n, res, &m);
 	}
 	else if (string[i] == 'u')
 	{
-		nbr = (int)va_arg(args, unsigned int);
-		count = nbr_alloc(nbr, res, 10);
+		nbr = va_arg(args, unsigned int);
+		count = nbr_alloc(nbr, res, 0, 10);
 		ft_putnbr_print(nbr, res, &m);
 	}
 	else if (string[i] == 'x')
 	{
 		nbr = va_arg(args, unsigned int);
-		count = nbr_alloc(nbr, res, 16);
+		count = nbr_alloc(nbr, res, 1, 16);
 		ft_putnbr_hex_print(nbr, res, 1, &m);
 	}
 	else if (string[i] == 'X')
 	{
 		nbr = va_arg(args, unsigned int);
-		count = nbr_alloc(nbr, res, 16);
+		count = nbr_alloc(nbr, res, 2, 16);
 		ft_putnbr_hex_print(nbr, res, 2, &m);
 	}
 	else if (string[i] == '%')
@@ -206,7 +213,6 @@ int	ft_printf(const char *string, ...)
 	int			count;
 	int			i;
 	int			j;
-	int			c;
 	char		*final_res;
 	va_list		args;
 	t_printf	*head;
@@ -256,7 +262,6 @@ int	ft_dprintf(int fd, const char *string, ...)
 	int			count;
 	int			i;
 	int			j;
-	int			c;
 	char		*final_res;
 	va_list		args;
 	t_printf	*head;
