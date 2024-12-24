@@ -6,11 +6,11 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 14:33:37 by aatieh            #+#    #+#             */
-/*   Updated: 2024/11/03 19:59:23 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/24 21:32:53 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../libft.h"
 
 void	ft_bzero(void *s, size_t n)
 {

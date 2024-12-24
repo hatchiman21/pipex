@@ -6,11 +6,11 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 14:34:40 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/03 18:56:36 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/24 21:32:53 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../libft.h"
 
 static int	allocation(long int n, char **res, int base)
 {

@@ -6,11 +6,12 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 14:38:55 by aatieh            #+#    #+#             */
-/*   Updated: 2024/11/03 20:00:15 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/24 21:32:53 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../libft.h"
+#include "../ft_printf.h"
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
@@ -34,5 +35,28 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		j++;
 	}
 	res[i + j] = '\0';
+	return (res);
+}
+
+char	*ft_strjoin_printf(t_printf *og_res, int count)
+{
+	t_printf	*tmp;
+	char		*res;
+	int			i;
+	int			j;
+
+	res = malloc(sizeof(char) * (count + 1));
+	if (!res)
+		return (NULL);
+	i = 0;
+	tmp = og_res;
+	while (tmp)
+	{
+		j = 0;
+		while (j < tmp->len)
+			res[i++] = tmp->str[j++];
+		tmp = tmp->next;
+	}
+	res[i] = '\0';
 	return (res);
 }

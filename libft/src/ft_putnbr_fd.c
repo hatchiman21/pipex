@@ -6,11 +6,12 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 14:37:27 by aatieh            #+#    #+#             */
-/*   Updated: 2024/11/23 19:15:48 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/24 21:32:53 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../libft.h"
+#include "../ft_printf.h"
 
 int	ft_putnbr_fd(long n, int fd)
 {
@@ -31,4 +32,22 @@ int	ft_putnbr_fd(long n, int fd)
 	r = (m % 10) + '0';
 	write (fd, &r, 1);
 	return (i);
+}
+
+int	ft_putnbr_print(long n, t_printf *res, int *i)
+{
+	long	m;
+	char	r;
+
+	m = n;
+	if (m < 0)
+	{
+		*i += write_char_printf('-', res->str);
+		m *= -1;
+	}
+	if (m > 9)
+		ft_putnbr_print(m / 10, res, i);
+	r = (m % 10) + '0';
+	*i += write_char_printf(r, res->str + *i);
+	return (*i + 1);
 }
