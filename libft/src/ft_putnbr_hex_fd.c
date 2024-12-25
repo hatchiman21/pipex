@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 18:57:00 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/24 21:32:53 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/25 04:06:13 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ int	ft_putnbr_hex_fd(unsigned long n, int fd, int j)
 
 int	ft_putnbr_hex_print(unsigned long n, t_printf *res, int j, int *i)
 {
+	if (!res->str)
+		return (0);
 	if (j == 3 && n != 0)
 		*i += write_printf("0x", res->str, 2);
 	else if (j == 3 && n == 0)

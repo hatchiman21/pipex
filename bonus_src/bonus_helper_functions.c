@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:15:44 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/16 21:45:07 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/25 01:14:27 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ void	free_all(char *str, char **split)
 
 void	close_all(int fd1, int fd2)
 {
-	if (fd1 && fd1 != -1)
+	if (fd1 != -1)
 		close(fd1);
-	if (fd2 && fd2 != -1)
+	if (fd2 != -1)
 		close(fd2);
 }
 

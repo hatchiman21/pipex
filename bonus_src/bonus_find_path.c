@@ -6,11 +6,27 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 18:06:10 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/22 19:06:20 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/25 01:10:10 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/bonus_pipex.h"
+
+char	*check_status(char **cmd, char **paths, char *path)
+{
+	if (access(path, X_OK) == 0)
+		return (path);
+	if (access(path, F_OK) == 0)
+	{
+		ft_dprintf(2, "pipex: %s: Permission denied\n", cmd[0]);
+		if (cmd[0] != path)
+			free(path);
+		free_all(NULL, paths);
+		free_all(NULL, cmd);
+		exit(126);
+	}
+	return (path);
+}
 
 char	**get_all_paths(char **envp)
 {
@@ -26,7 +42,7 @@ char	**get_all_paths(char **envp)
 	return (path);
 }
 
-char	*get_final_path(char **paths, char *tmp)
+char	*get_final_path(char **paths, char *tmp, char **cmd)
 {
 	char	*path;
 	char	**tmp_path;
@@ -40,8 +56,8 @@ char	*get_final_path(char **paths, char *tmp)
 		path = ft_strjoin(*tmp_path, tmp);
 		if (!path)
 			break ;
-		if (access(path, X_OK) == 0)
-			return (path);
+		if (access(path, F_OK) == 0)
+			return (check_status(cmd, paths, path));
 		free(path);
 		path = NULL;
 		tmp_path++;
@@ -49,14 +65,14 @@ char	*get_final_path(char **paths, char *tmp)
 	return (path);
 }
 
-char	*get_path(char **cmd, char **envp)
+char	*get_path(char **cmd, char **envp, int fd[2])
 {
 	char	**paths;
 	char	*path;
 	char	*tmp;
 
-	if (access(cmd[0], X_OK) == 0)
-		return (ft_strdup(cmd[0]));
+	if (access(cmd[0], F_OK) == 0)
+		return (ft_strdup(check_status(cmd, NULL, cmd[0])));
 	tmp = ft_strjoin("/", cmd[0]);
 	paths = get_all_paths(envp);
 	if (!paths || !tmp)
@@ -64,11 +80,12 @@ char	*get_path(char **cmd, char **envp)
 		free_all(tmp, cmd);
 		return (NULL);
 	}
-	path = get_final_path(paths, tmp);
+	path = get_final_path(paths, tmp, cmd);
 	free_all(tmp, paths);
 	if (path == NULL)
 	{
-		ft_dprintf(2, "pipex: command not found: %s\n", cmd[0]);
+		ft_dprintf(2, "pipex: %s: command not found\n", cmd[0]);
+		close_all(fd[0], fd[1]);
 		free_all(NULL, cmd);
 		exit(127);
 	}

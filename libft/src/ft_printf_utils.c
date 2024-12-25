@@ -6,12 +6,26 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/24 21:28:41 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/24 21:33:17 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/25 04:16:25 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libft.h"
 #include "../ft_printf.h"
+
+void	free_printf(t_printf *res)
+{
+	t_printf	*tmp;
+
+	while (res)
+	{
+		tmp = res->next;
+		if (res->str)
+			free(res->str);
+		free(res);
+		res = tmp;
+	}
+}
 
 int	write_printf(char *src, char *dest, int char_num)
 {

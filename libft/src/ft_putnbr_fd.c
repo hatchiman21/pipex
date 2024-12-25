@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 14:37:27 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/24 21:32:53 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/25 04:07:36 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ int	ft_putnbr_print(long n, t_printf *res, int *i)
 	char	r;
 
 	m = n;
+	if (!res->str)
+		return (0);
 	if (m < 0)
 	{
 		*i += write_char_printf('-', res->str);

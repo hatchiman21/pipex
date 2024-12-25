@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:10:05 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/22 19:06:50 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/25 03:42:50 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static void	limiter_child(char *argv[], int pipefd[2], int tmp_fd, char **envp)
 	path = NULL;
 	cmd = ft_split(argv[3], ' ');
 	if (cmd && cmd[0])
-		path = get_path(cmd, envp);
+		path = get_path(cmd, envp, (int [2]){pipefd[1], tmp_fd});
 	if (!path || tmp_fd == -1 || dup2(pipefd[1], STDOUT_FILENO) == -1
 		|| dup2(tmp_fd, STDIN_FILENO) == -1)
 	{
@@ -55,9 +55,9 @@ static void	limiter_child(char *argv[], int pipefd[2], int tmp_fd, char **envp)
 	}
 	close_all(tmp_fd, pipefd[1]);
 	execve(path, cmd, envp);
-	ft_dprintf(2, "pipex : command not found : %s\n", cmd[0]);
+	ft_dprintf(2, "pipex : %s: Is a directory\n", cmd[0]);
 	free_all(path, cmd);
-	exit(127);
+	exit(126);
 }
 
 void	limiter_process(char *argv[], int argc, t_pipex *vars, char **envp)

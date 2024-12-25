@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_print_special.c                                 :+:      :+:    :+:   */
+/*   ft_printf_special.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/24 21:23:28 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/24 21:24:31 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/25 04:05:35 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ int	print_main(char *string, va_list args, int i, t_printf *res)
 	char			c;
 
 	res->len = 0;
+	res->str = NULL;
 	if (string[i] == 'c')
 	{
 		c = va_arg(args, int);

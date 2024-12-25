@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:45:11 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/22 19:25:51 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/25 03:43:02 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	child_process(char *arg, int in_fd, int out_fd, char **envp)
 	path = NULL;
 	cmd = ft_split(arg, ' ');
 	if (cmd && cmd[0])
-		path = get_path(cmd, envp);
+		path = get_path(cmd, envp, (int [2]){in_fd, out_fd});
 	if (!cmd || in_fd == -1 || dup2(out_fd, STDOUT_FILENO) == -1
 		|| dup2(in_fd, STDIN_FILENO) == -1 || !path)
 	{
@@ -33,7 +33,7 @@ int	child_process(char *arg, int in_fd, int out_fd, char **envp)
 	execve(path, cmd, envp);
 	ft_dprintf(2, "pipex : %s: Is a directory\n", cmd[0]);
 	free_all(path, cmd);
-	exit(127);
+	exit(126);
 }
 
 void	first_process(char *argv[], int argc, t_pipex *vars, char **envp)
@@ -45,8 +45,6 @@ void	first_process(char *argv[], int argc, t_pipex *vars, char **envp)
 	vars->last_id = fork();
 	if (!vars->last_id)
 	{
-		if (access(argv[1], R_OK) == -1 && fd != -1)
-			close(fd);
 		check_access(argv[1], vars, 1);
 		close(vars->pipefd[0]);
 		child_process(argv[2], fd, vars->pipefd[1], envp);
@@ -56,8 +54,6 @@ void	first_process(char *argv[], int argc, t_pipex *vars, char **envp)
 		close_all(fd, vars->pipefd[1]);
 		if (vars->last_id == -1)
 			ft_putstr_fd("first fork failed\n", 2);
-		if (access(argv[1], R_OK) == -1)
-			waitpid(vars->last_id, NULL, 0);
 		middle_process(argv, argc, vars, envp);
 		last_process(argv, argc, vars, envp);
 	}
@@ -102,9 +98,8 @@ void	last_process(char *argv[], int argc, t_pipex *vars, char **envp)
 	vars->last_id = fork();
 	if (!vars->last_id)
 	{
-		if (access(argv[argc - 1], W_OK) == -1 && fd != -1)
-			close(fd);
 		check_access(argv[argc - 1], vars, 0);
+		close(vars->pipefd[1]);
 		child_process(argv[argc - 2], vars->pipefd[0], fd, envp);
 	}
 	else

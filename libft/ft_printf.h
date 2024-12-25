@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 03:59:10 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/24 21:36:17 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/25 04:16:03 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ t_printf	*ft_printf_helper(char *string, va_list *args, int *count);
 int			write_printf(char *src, char *dest, int char_num);
 int			write_char_printf(char c, char *dest);
 char		*empty_check(char *string);
+void		free_printf(t_printf *res);
 int			nbr_alloc(long long n, t_printf *res, int j, int base);
 
 int			print_string(char *string, t_printf *res, int *i);

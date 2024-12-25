@@ -6,25 +6,12 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 18:14:06 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/24 21:32:36 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/25 04:24:22 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libft.h"
 #include "../ft_printf.h"
-
-void	free_printf(t_printf *res)
-{
-	t_printf	*tmp;
-
-	while (res)
-	{
-		tmp = res->next;
-		free(res->str);
-		free(res);
-		res = tmp;
-	}
-}
 
 int	print_string(char *string, t_printf *res, int *i)
 {
@@ -34,8 +21,31 @@ int	print_string(char *string, t_printf *res, int *i)
 	while (string[*i + 1] && string[*i + 1] != '%')
 		*i += 1;
 	res->str = malloc(sizeof(char) * *i - j + 2);
+	if (!res->str)
+		return (0);
 	res->len = write_printf((string + j), res->str, *i - j + 1);
 	return (res->len);
+}
+
+int	ft_printf_helper_step(t_printf *res, t_printf *head, char *string, int i)
+{
+	if (!res->str)
+	{
+		free_printf(head);
+		return (-1);
+	}
+	if (string[i])
+	{
+		res->next = malloc(sizeof(t_printf));
+		if (!res->next)
+		{
+			free_printf(head);
+			return (-1);
+		}
+		res = res->next;
+	}
+	res->next = NULL;
+	return (0);
 }
 
 t_printf	*ft_printf_helper(char *string, va_list *args, int *count)
@@ -48,6 +58,8 @@ t_printf	*ft_printf_helper(char *string, va_list *args, int *count)
 	res = NULL;
 	head = NULL;
 	res = malloc(sizeof(t_printf));
+	if (!res)
+		return (NULL);
 	head = res;
 	while (string[i])
 	{
@@ -56,12 +68,8 @@ t_printf	*ft_printf_helper(char *string, va_list *args, int *count)
 		else
 			*count += print_string(string, res, &i);
 		i++;
-		if (string[i])
-		{
-			res->next = malloc(sizeof(t_printf));
-			res = res->next;
-		}
-		res->next = NULL;
+		if (ft_printf_helper_step(res, head, string, i) == -1)
+			return (NULL);
 	}
 	return (head);
 }
@@ -78,9 +86,13 @@ int	ft_printf(const char *string, ...)
 	count = 0;
 	va_start (args, string);
 	res = ft_printf_helper((char *)string, &args, &count);
+	va_end(args);
+	if (!res)
+		return (0);
 	final_res = ft_strjoin_printf(res, count);
 	free_printf(res);
-	va_end(args);
+	if (!final_res)
+		return (0);
 	write(1, final_res, ft_strlen(final_res));
 	free(final_res);
 	return (count);
@@ -98,9 +110,13 @@ int	ft_dprintf(int fd, const char *string, ...)
 	count = 0;
 	va_start (args, string);
 	res = ft_printf_helper((char *)string, &args, &count);
+	va_end(args);
+	if (!res)
+		return (0);
 	final_res = ft_strjoin_printf(res, count);
 	free_printf(res);
-	va_end(args);
+	if (!final_res)
+		return (0);
 	write(fd, final_res, ft_strlen(final_res));
 	free(final_res);
 	return (count);

@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:43:21 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/22 18:35:05 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/25 00:29:32 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef struct s_pipex
 	int	last_id;
 }		t_pipex;
 
-char	*get_path(char **cmd, char **envp);
+char	*get_path(char **cmd, char **envp, int fd[2]);
 int		wait_for_all(t_pipex *vars);
 void	close_all(int fd1, int fd2);
 void	free_all(char *str, char **split);
