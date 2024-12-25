@@ -20,7 +20,7 @@ CC			= @cc
 RM			= @rm -f
 CFLAGS			= -Wall -Wextra -Werror -I.
 
-NAME			= libftprintf.a
+NAME			= libft.a
 
 all:			$(NAME)
 
