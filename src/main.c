@@ -6,11 +6,11 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:45:11 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/25 06:58:41 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/25 08:00:45 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/bonus_pipex.h"
+#include "../inc/pipex.h"
 
 int	child_process(char *arg, int in_fd, int out_fd, char **envp)
 {

@@ -14,7 +14,7 @@ SRCS		=	ft_isalpha.c ft_isdigit.c ft_isalnum.c ft_isascii.c ft_isprint.c \
 				get_next_line.c get_next_line_utils.c
 
 SRCS := $(addprefix $(SRCS_DIR)/, $(SRCS))
-OBJS := $(SRCS:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
+OBJS = $(SRCS:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
 
 CC			= @cc
 RM			= @rm -f

@@ -6,11 +6,11 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:10:05 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/25 07:35:44 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/25 08:00:45 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/bonus_pipex.h"
+#include "../inc/pipex.h"
 
 static void	take_input(int *tmp_fd, char *argv[])
 {
