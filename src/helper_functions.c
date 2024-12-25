@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:15:44 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/25 08:00:45 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/25 08:42:25 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ int	wait_for_all(t_pipex *vars)
 		}
 		vars->children_num -= 1;
 	}
-	unlink("./src/tempfile");
 	return (last_status);
 }
 

@@ -6,18 +6,16 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:10:05 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/25 08:00:45 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/25 08:54:07 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
 
-static void	take_input(int *tmp_fd, char *argv[])
+static void	take_input(int tmp_fd, char *argv[])
 {
 	char	*line;
 
-	if (*tmp_fd == -1)
-		return ;
 	line = get_next_line(0);
 	while (line)
 	{
@@ -25,14 +23,13 @@ static void	take_input(int *tmp_fd, char *argv[])
 			&& ft_strlen(line) - 1 == ft_strlen(argv[2])
 			&& line[ft_strlen(argv[2])] == '\n')
 			break ;
-		write(*tmp_fd, line, ft_strlen(line));
+		write(tmp_fd, line, ft_strlen(line));
 		free(line);
 		line = get_next_line(0);
 	}
 	if (line)
 		free(line);
-	close(*tmp_fd);
-	*tmp_fd = open("./src/tempfile", O_RDWR);
+	close(tmp_fd);
 }
 
 static void	limiter_child(char *argv[], int pipefd[2], int tmp_fd, char **envp)
@@ -62,23 +59,26 @@ static void	limiter_child(char *argv[], int pipefd[2], int tmp_fd, char **envp)
 
 void	limiter_process(char *argv[], int argc, t_pipex *vars, char **envp)
 {
-	int	tmp_fd;
+	int	tmp_pipefd[2];
 
-	tmp_fd = open("./src/tempfile", O_RDWR | O_CREAT | O_TRUNC, 0666);
-	if (tmp_fd == -1)
-		perror("unable to creat tmp file");
+	if (pipe(tmp_pipefd) == -1)
+	{
+		perror("Pipe failed");
+		close_all(vars->pipefd[0], vars->pipefd[1]);
+		exit(1);
+	}
 	else
 	{
-		take_input(&tmp_fd, argv);
+		take_input(tmp_pipefd[1], argv);
 		vars->children_num += 1;
 		vars->last_id = fork();
 		if (!vars->last_id)
-			limiter_child(argv, vars->pipefd, tmp_fd, envp);
+			limiter_child(argv, vars->pipefd, tmp_pipefd[0], envp);
 		else
 		{
 			if (vars->last_id == -1)
 				ft_dprintf(2, "limiter fork failed\n");
-			close_all(tmp_fd, vars->pipefd[1]);
+			close_all(tmp_pipefd[0], vars->pipefd[1]);
 		}
 	}
 	last_process(argv, argc, vars, envp);

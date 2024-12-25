@@ -6,7 +6,7 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 21:45:11 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/25 08:00:45 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/25 08:48:43 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,11 @@ int	main(int argc, char *argv[], char **envp)
 	if (argc < 5)
 	{
 		ft_dprintf(2, "Not enough input\n");
+		return (1);
+	}
+	if (ft_strncmp("here_doc", argv[1], 10) == 0 && argc != 6)
+	{
+		ft_dprintf(2, "Not enough input for here_doc\n");
 		return (1);
 	}
 	if (pipe(vars.pipefd) == -1)
