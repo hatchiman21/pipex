@@ -6,11 +6,11 @@
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 18:15:44 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/22 15:20:21 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/25 07:40:46 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/pipex.h"
+#include "../inc/bonus_pipex.h"
 
 void	free_all(char *str, char **split)
 {
@@ -31,9 +31,9 @@ void	free_all(char *str, char **split)
 
 void	close_all(int fd1, int fd2)
 {
-	if (fd1 && fd1 != -1)
+	if (fd1 != -1)
 		close(fd1);
-	if (fd2 && fd2 != -1)
+	if (fd2 != -1)
 		close(fd2);
 }
 
@@ -58,6 +58,7 @@ int	wait_for_all(t_pipex *vars)
 		}
 		vars->children_num -= 1;
 	}
+	unlink("./src/tempfile");
 	return (last_status);
 }
 
@@ -68,9 +69,9 @@ void	check_access(char *arg, t_pipex *vars, int is_first)
 		if (access(arg, R_OK) == -1)
 		{
 			if (access(arg, F_OK) == -1)
-				ft_dprintf(2, "pipex: no such file or directory: %s\n", arg);
+				ft_dprintf(2, "pipex: %s: No such file or directory\n", arg);
 			else
-				ft_dprintf(2, "pipex: permission denied: %s\n", arg);
+				ft_dprintf(2, "pipex: %s: Permission denied\n", arg);
 			close_all(vars->pipefd[0], vars->pipefd[1]);
 			exit(EXIT_FAILURE);
 		}
@@ -79,7 +80,7 @@ void	check_access(char *arg, t_pipex *vars, int is_first)
 	{
 		if (access(arg, W_OK) == -1)
 		{
-			ft_dprintf(2, "pipex: permission denied: %s\n", arg);
+			ft_dprintf(2, "pipex: %s: Permission denied\n", arg);
 			close_all(vars->pipefd[0], vars->pipefd[1]);
 			exit(EXIT_FAILURE);
 		}

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   find_path.c                                        :+:      :+:    :+:   */
+/*   bonus_find_path.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aatieh <aatieh@student.42amman.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 18:06:10 by aatieh            #+#    #+#             */
-/*   Updated: 2024/12/22 21:25:30 by aatieh           ###   ########.fr       */
+/*   Updated: 2024/12/25 01:10:10 by aatieh           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/pipex.h"
+#include "../inc/bonus_pipex.h"
 
 char	*check_status(char **cmd, char **paths, char *path)
 {
@@ -65,7 +65,7 @@ char	*get_final_path(char **paths, char *tmp, char **cmd)
 	return (path);
 }
 
-char	*get_path(char **cmd, char **envp)
+char	*get_path(char **cmd, char **envp, int fd[2])
 {
 	char	**paths;
 	char	*path;
@@ -85,7 +85,7 @@ char	*get_path(char **cmd, char **envp)
 	if (path == NULL)
 	{
 		ft_dprintf(2, "pipex: %s: command not found\n", cmd[0]);
-		perror(cmd[0]);
+		close_all(fd[0], fd[1]);
 		free_all(NULL, cmd);
 		exit(127);
 	}
